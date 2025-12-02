@@ -47,27 +47,17 @@ How to fix:
 
 After fixing the workflow, retry the GET request from the app — the endpoint should return a 200 and valid JSON.
 
-## Submitting multiple scheduled posts at once
+## Submitting a scheduled post (single input)
 
-The UI now supports adding multiple rows to schedule several posts in one go.
+The UI currently uses a single-row input to schedule one post at a time: Tema, Tanggal, and Jam. When the form is submitted the server action forwards a single payload to your n8n POST webhook (`N8N_WEBHOOK_URL`).
 
-- Click "Tambah baris" to add another row, or "Hapus" to remove a row.
-- Use the numeric "Planned" field to create that many input rows instantly (min 1, max 20).
-- Each row requires Tema, Tanggal and Jam.
-- The client will send each row to your n8n POST webhook (`N8N_WEBHOOK_URL`) sequentially. If any item fails, the form will return an aggregate error message.
-
-If you want to debug or simulate multi-row submissions from the terminal you can post multiple payloads sequentially (example):
+Quick manual POST example (to n8n webhook directly):
 
 ```bash
 curl -X POST http://localhost:5678/webhook/input-jadwal \
-	-H 'Content-Type: application/json' \
-	-H 'x-api-key: rahasia123' \
-	-d '{"Tema Postingan":"First","Tanggal Posting":"2025-12-10","Jam":"10:00"}'
-
-curl -X POST http://localhost:5678/webhook/input-jadwal \
-	-H 'Content-Type: application/json' \
-	-H 'x-api-key: rahasia123' \
-	-d '{"Tema Postingan":"Second","Tanggal Posting":"2025-12-11","Jam":"11:00"}'
+  -H 'Content-Type: application/json' \
+  -H 'x-api-key: rahasia123' \
+  -d '{"Tema Postingan":"My test","Tanggal Posting":"2025-12-04","Jam":"10:00"}'
 ```
 
 ## Deploy on Vercel

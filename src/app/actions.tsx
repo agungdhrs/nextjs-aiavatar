@@ -3,80 +3,49 @@
 import { revalidatePath } from 'next/cache';
 
 export async function submitJadwal(formData: FormData) {
-  // Support single or multiple rows: FormData can have repeated keys
-  const temas = formData.getAll('tema').map(String);
-  const tanggals = formData.getAll('tanggal').map(String);
-  const jams = formData.getAll('jam').map(String);
+  const tema = formData.get('tema');
+  const tanggal = formData.get('tanggal');
+  const jam = formData.get('jam');
 
-  if (temas.length === 0 || tanggals.length === 0 || jams.length === 0) {
+  // Simple validation
+  if (!tema || !tanggal || !jam) {
     return { success: false, message: 'Semua field harus diisi' };
   }
 
-  // Basic length check
-  if (!(temas.length === tanggals.length && temas.length === jams.length)) {
-    return { success: false, message: 'Jumlah tema/tanggal/jam tidak konsisten' };
-  }
+  const payload = {
+    'Tema Postingan': tema,
+    'Tanggal Posting': tanggal,
+    'Jam': jam,
+  };
 
-  // Build batch payload and send as a single request to n8n
-  const items = temas.map((t, i) => ({ 'Tema Postingan': t, 'Tanggal Posting': tanggals[i], 'Jam': jams[i] }));
+  try {
+    console.log('📤 Mengirim payload ke n8n:', payload);
+    const response = await fetch(process.env.N8N_WEBHOOK_URL!, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.N8N_API_KEY!,
+      },
+      body: JSON.stringify(payload),
+    });
 
-  // Send items one-by-one (more robust) and collect results for each
-  const results: Array<{ index: number; ok: boolean; status?: number; statusText?: string; body?: any; attempts?: number; error?: any }> = [];
-  const maxRetries = 3;
-  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+    const bodyText = await response.text().catch(() => '');
+    let body: any = bodyText;
+    try { body = bodyText ? JSON.parse(bodyText) : bodyText; } catch {}
 
-  for (let i = 0; i < items.length; i++) {
-    const single = items[i];
-    let attempt = 0;
-    let ok = false;
-    let lastResult: any = null;
+    console.log('✅ n8n POST response:', response.status, response.statusText, body);
 
-    while (attempt < maxRetries && !ok) {
-      attempt += 1;
-      try {
-        console.log(`📤 [${i + 1}/${items.length}] Mengirim payload ke n8n (attempt ${attempt}):`, single);
-        const response = await fetch(process.env.N8N_WEBHOOK_URL!, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': process.env.N8N_API_KEY!,
-          },
-          body: JSON.stringify(single),
-        });
-
-        const text = await response.text().catch(() => '');
-        let body: any = text;
-        try { body = text ? JSON.parse(text) : text; } catch {}
-
-        console.log(`✅ [${i + 1}/${items.length}] n8n POST response (attempt ${attempt}):`, response.status, response.statusText, body);
-
-        if (!response.ok) {
-          lastResult = { status: response.status, statusText: response.statusText, body };
-          if (attempt < maxRetries) await delay(250 * Math.pow(2, attempt));
-        } else {
-          ok = true;
-          results.push({ index: i, ok: true, status: response.status, statusText: response.statusText, body, attempts: attempt });
-        }
-      } catch (e) {
-        lastResult = e instanceof Error ? e.message : String(e);
-        console.error(`❌ [${i + 1}/${items.length}] Fetch error on attempt ${attempt}:`, lastResult);
-        if (attempt < maxRetries) await delay(250 * Math.pow(2, attempt));
-      }
+    if (!response.ok) {
+      console.error('❌ n8n Error Detail:', response.status, response.statusText, body);
+      return { success: false, message: `Gagal ke n8n: ${response.status} ${response.statusText}` };
     }
 
-    if (!ok) {
-      results.push({ index: i, ok: false, attempts: maxRetries, error: lastResult });
-    }
+    revalidatePath('/');
+    return { success: true, message: 'Jadwal berhasil disimpan!' };
+  } catch (error) {
+    console.error('❌ Catch Error:', error);
+    return { success: false, message: error instanceof Error ? error.message : String(error) };
   }
-
-  revalidatePath('/');
-
-  const failed = results.filter(r => !r.ok);
-  if (failed.length > 0) {
-    return { success: false, message: `${failed.length} dari ${results.length} pengiriman gagal`, results };
-  }
-
-  return { success: true, message: `${results.length} jadwal berhasil disimpan!`, results };
 }
 
 export async function getJadwalList() {
