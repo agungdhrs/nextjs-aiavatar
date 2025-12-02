@@ -1,0 +1,963 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "// Normalize incoming webhook payload into a single item with an `items` array (works with top-level array, {items:[]}, or single object).\nconst incoming = items[0].json;\nlet body = undefined;\nif (Array.isArray(incoming)) body = incoming;\nelse if (incoming && Array.isArray(incoming.body)) body = incoming.body;\nelse if (incoming && incoming.body && Array.isArray(incoming.body.items)) body = incoming.body.items;\nelse if (incoming && Array.isArray(incoming.items)) body = incoming.items;\nelse if (incoming && incoming.body !== undefined) body = incoming.body;\nelse body = incoming;\nconst arr = Array.isArray(body) ? body : [body];\n// Return a single item with json.items = arr so SplitInBatches can split it correctly\nreturn [{ json: { items: arr } }];"
+      },
+      "id": "c1b8d6fa-1234-4a7b-9e1d-aaaaaaaaaaaa",
+      "name": "Normalize Batch",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -52,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=A candid, realistic photograph of {{ $('2. Describe Avatar (GPT-4o)').item.json.content }}. \\n\\nThe person is currently: {{ $('Get row(s) in sheet').item.json.Tema }}.\\n\\nPHOTOGRAPHY SETTINGS (STRICT):\\n- Shot on iPhone 15 Pro or Sony A7R IV.\\n- Natural lighting, slightly imperfect framing (candid look).\\n- Skin texture must be visible (pores, slight stubble).\\n- Background: Real world location, depth of field (blurred background).\\n- NO 3D render, NO illustration, NO painting, NO plastic skin.\\n- The image should look like a casual social media post.",
+        "options": {
+          "returnImageUrls": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1168,
+        80
+      ],
+      "id": "88731ea4-c575-4ae2-8f7f-fce9c120ec11",
+      "name": "3. Generate Final Image (DALL-E)",
+      "credentials": {
+        "openAiApi": {
+          "id": "80V1Gor0JJzon2kM",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "propertyName": "items"
+        }
+      },
+      "id": "d2e9f7b0-2345-4b7a-8e2b-bbbbbbbbbbbb",
+      "name": "Split Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        192,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1KuVSTqSLFhpHSalZGxAEq3dcZSiFrI25",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "7e55090b-b8d9-4b11-ba46-696a0318e245",
+      "name": "1. Download Avatar (Drive)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        672,
+        80
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "MxOIeaRiomehYo33",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "Input Jadwal Konten",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Tema Postingan",
+              "placeholder": "Masukkan tema postingan",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Tanggal Posting",
+              "fieldType": "date",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Jam",
+              "placeholder": "Format 24 Jam, cth: 14:30",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -272,
+        -16
+      ],
+      "id": "260bf32d-ad59-4e9b-bba4-d39d96720fcb",
+      "name": "On form submission",
+      "webhookId": "7275a71e-2225-4198-be42-148bf2cabdbf"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw",
+          "mode": "list",
+          "cachedResultName": "Posting_Medsos_Otomatis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 931616861,
+          "mode": "list",
+          "cachedResultName": "Jadwal_Mentah",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit#gid=931616861"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Tema": "={{ $json['Tema Postingan'] }}",
+            "Waktu_Post": "={{ $json['Tanggal Posting'] }} {{ $json.Jam }}:00",
+            "Status": "Pending"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Tema",
+              "displayName": "Tema",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Waktu_Post",
+              "displayName": "Waktu_Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -48,
+        -16
+      ],
+      "id": "ad1a9cab-0704-4680-9380-3640cb7916c9",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4GK90jXD5Wme7sSn",
+          "name": "Google Auth agung@irisnco.id"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "merge-results-1111-2222-3333-444444444444",
+      "name": "Collect Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        360,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        -80
+      ],
+      "id": "respond-post-5555-6666-7777-888888888888",
+      "name": "Respond to Webhook POST"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -272,
+        224
+      ],
+      "id": "2f178ad4-3359-49de-af27-64d3c31ca708",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw",
+          "mode": "list",
+          "cachedResultName": "Posting_Medsos_Otomatis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 931616861,
+          "mode": "list",
+          "cachedResultName": "Jadwal_Mentah",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit#gid=931616861"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "Pending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -48,
+        224
+      ],
+      "id": "038784b5-a2a4-4388-bca7-ad205b287e74",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4GK90jXD5Wme7sSn",
+          "name": "Google Auth agung@irisnco.id"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0d68010d-2b47-4184-913a-4467554f738d",
+              "name": "Waktu_Post_Clean",
+              "value": "={{ DateTime.fromFormat($json.Waktu_Post, 'yyyy-MM-dd HH:mm:ss') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        224
+      ],
+      "id": "0c975222-962d-45c1-876c-bd79cc58fded",
+      "name": "Normalize Data "
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "72e50e57-d5b7-45af-b5dd-4cad0cee33de",
+              "leftValue": "={{ $json.Waktu_Post_Clean }}",
+              "rightValue": "={{ $now }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "beforeOrEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        384,
+        224
+      ],
+      "id": "b0605238-3d8c-4d27-8a7f-da79c577fbc6",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "163d0cad-73ab-433d-bd09-56de80ece496",
+      "name": "Merge Data",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1376,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw",
+          "mode": "list",
+          "cachedResultName": "Posting_Medsos_Otomatis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 931616861,
+          "mode": "list",
+          "cachedResultName": "Jadwal_Mentah",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit#gid=931616861"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Done",
+            "row_number": "={{ $('Get row(s) in sheet').item.json.row_number }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Tema",
+              "displayName": "Tema",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Waktu_Post",
+              "displayName": "Waktu_Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1584,
+        320
+      ],
+      "id": "64a51818-5e74-4943-96a7-d3d5eb40b913",
+      "name": "Update Status to Done",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4GK90jXD5Wme7sSn",
+          "name": "Google Auth agung@irisnco.id"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw",
+          "mode": "list",
+          "cachedResultName": "Posting_Medsos_Otomatis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 931616861,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Image_URL": "={{ $json.url }}",
+            "Caption": "={{ $('Get row(s) in sheet').item.json.Tema }} #AIArt #Automated"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Image_URL",
+              "displayName": "Image_URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Caption",
+              "displayName": "Caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1584,
+        96
+      ],
+      "id": "8cee6a6a-b96b-4089-870d-d6ea20988d1d",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4GK90jXD5Wme7sSn",
+          "name": "Google Auth agung@irisnco.id"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw",
+          "mode": "list",
+          "cachedResultName": "Posting_Medsos_Otomatis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Debug_Id": "={{ $now + '-' + ($json['Tema Postingan'] || Math.random()) }}",
+            "Debug_Tema": "={{ $json['Tema Postingan'] }}",
+            "Debug_Payload": "={{ JSON.stringify($json) }}",
+            "Debug_Timestamp": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            { "id": "Debug_Id", "displayName": "Debug_Id", "type": "string", "display": true },
+            { "id": "Debug_Tema", "displayName": "Debug_Tema", "type": "string", "display": true },
+            { "id": "Debug_Payload", "displayName": "Debug_Payload", "type": "string", "display": true },
+            { "id": "Debug_Timestamp", "displayName": "Debug_Timestamp", "type": "string", "display": true }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        60,
+        -80
+      ],
+      "id": "append-debug-1111-2222-3333-444444444444",
+      "name": "Append debug row",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4GK90jXD5Wme7sSn",
+          "name": "Google Auth agung@irisnco.id"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw",
+          "mode": "list",
+          "cachedResultName": "Posting_Medsos_Otomatis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit?usp=drivesdk"
+        },
+          "sheetName": {
+          "__rl": true,
+          "value": "Debug_Log",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Normalized_Count": "={{ Array.isArray($json.items) ? $json.items.length : 1 }}",
+            "Normalized_Payload": "={{ JSON.stringify($json.items) }}",
+            "Normalized_Timestamp": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            { "id": "Normalized_Count", "displayName": "Normalized_Count", "type": "number", "display": true },
+            { "id": "Normalized_Payload", "displayName": "Normalized_Payload", "type": "string", "display": true },
+            { "id": "Normalized_Timestamp", "displayName": "Normalized_Timestamp", "type": "string", "display": true },
+            { "id": "Debug_Id", "displayName": "Debug_Id", "type": "string", "display": true }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        80,
+        -160
+      ],
+      "id": "append-incoming-debug-9999-aaaa-bbbb-cccccccccccc",
+      "name": "Append incoming debug",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4GK90jXD5Wme7sSn",
+          "name": "Google Auth agung@irisnco.id"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a Photography Director. \\n\\nAnalyze the attached image and write a strict physical description for a DALL-E 3 prompt.\\n\\nTARGET: The result must look like a REAL PHOTO posted on Instagram, NOT an art piece.\\n\\nFocus on:\\n1. **Age & Ethnicity:** Be precise (e.g., \\\"Young European male, approx 25 years old\\\").\\n2. **Specific Features:** Stubble/beard, hair texture, eye shape.\\n3. **Clothing:** Describe the exact clothes in the photo (e.g., \\\"Red Ferrari Polo shirt\\\").\\n\\nOutput ONLY the physical description. Do not add intro/outro."
+            },
+            {
+              "content": "Analyze this person."
+            },
+            {
+              "content": "={{ \"data:\" + $('1. Download Avatar (Drive)').item.binary.data.mimeType + \";base64,\" + $('1. Download Avatar (Drive)').item.binary.data.data }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "32b89691-6438-46a3-a412-10b1e279114e",
+      "name": "2. Describe Avatar (GPT-4o)",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [
+        896,
+        80
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "80V1Gor0JJzon2kM",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "input-jadwal",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -272,
+        -176
+      ],
+      "id": "12483fca-22d8-4130-80b0-b57e0e10bc09",
+      "name": "Webhook",
+      "webhookId": "ce35f991-3a1a-48fc-83e0-e08138159195",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MNwKiSatRr48hlpz",
+          "name": "NextJS_AiAvatar"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "get-jadwal",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        320,
+        -192
+      ],
+      "id": "9f4678f4-c2fd-4100-8387-a46a25d698f5",
+      "name": "Webhook GET",
+      "webhookId": "4045e2d1-e149-4513-b895-904dd13a0d6e",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MNwKiSatRr48hlpz",
+          "name": "NextJS_AiAvatar"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw",
+          "mode": "list",
+          "cachedResultName": "Posting_Medsos_Otomatis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 931616861,
+          "mode": "list",
+          "cachedResultName": "Jadwal_Mentah",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit#gid=931616861"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        -192
+      ],
+      "id": "fa1b9e1b-6548-4877-a3c0-45f87b02ce2c",
+      "name": "Get All Rows",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4GK90jXD5Wme7sSn",
+          "name": "Google Auth agung@irisnco.id"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        768,
+        -192
+      ],
+      "id": "f0bb993c-4aa4-4d5e-b1a7-dca91774b745",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "3. Generate Final Image (DALL-E)": {
+      "main": [
+        [
+          {
+            "node": "Merge Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "1. Download Avatar (Drive)": {
+      "main": [
+        [
+          {
+            "node": "2. Describe Avatar (GPT-4o)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Normalize Data ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Data ": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "1. Download Avatar (Drive)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Merge Data": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Status to Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2. Describe Avatar (GPT-4o)": {
+      "main": [
+        [
+          {
+            "node": "3. Generate Final Image (DALL-E)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+        "Normalize Batch": {
+          "main": [
+            [
+              {
+                "node": "Append incoming debug",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Split Items",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+
+        "Split Items": {
+          "main": [
+            [
+              {
+                "node": "Append row in sheet",
+                "type": "main",
+                "index": 0
+              },
+              {
+                "node": "Append debug row",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Collect Results",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Collect Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append debug row": {
+      "main": [
+        [
+          {
+            "node": "Collect Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+
+    "Collect Results": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook POST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook GET": {
+      "main": [
+        [
+          {
+            "node": "Get All Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Rows": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e7aec7924d48196975fde37e9422c784fa4b269fea9a4b137c2f5d8c8fb1ab3e"
+  }
+}
