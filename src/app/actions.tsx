@@ -7,6 +7,7 @@ export interface Jadwal {
   'Tanggal Posting': string;
   'Jam': string;
   'Image URL'?: string;
+  'Account'?: string;
 }
 
 export async function submitJadwal(formData: FormData) {
@@ -15,9 +16,10 @@ export async function submitJadwal(formData: FormData) {
   const jam = formData.get('jam');
 
   const imageUrl = formData.get('imageUrl');
+  const account = formData.get('account');
 
   // Simple validation
-  if (!tema || !tanggal || !jam) {
+  if (!tema || !tanggal || !jam || !account) {
     return { success: false, message: 'Semua field harus diisi' };
   }
 
@@ -26,6 +28,7 @@ export async function submitJadwal(formData: FormData) {
     'Tanggal Posting': tanggal,
     'Jam': jam,
     'Image URL': imageUrl,
+    'Account': account,
   };
 
   try {

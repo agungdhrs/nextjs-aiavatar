@@ -70,6 +70,15 @@ export default function InputForm() {
           </div>
         </div>
 
+        <div>
+          <label className="block text-sm font-medium text-black">Akun Instagram</label>
+          <select name="account" required className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-black bg-white">
+            <option value="jakaambisi">jakaambisi</option>
+            <option value="viravoyages">viravoyages</option>
+            <option value="karin.nova_">karin.nova_</option>
+          </select>
+        </div>
+
         {previewUrl && (
           <div className="mt-4 border rounded p-2 bg-gray-50">
             <p className="text-xs font-bold mb-2 text-gray-500">PREVIEW GAMBAR AI:</p>
