@@ -2,29 +2,6 @@
   "nodes": [
     {
       "parameters": {
-        "resource": "image",
-        "prompt": "=A candid, realistic photograph of {{ $('2. Describe Avatar (GPT-4o)').item.json.content }}. \\n\\nThe person is currently: {{ $('Get row(s) in sheet').item.json.Tema }}.\\n\\nPHOTOGRAPHY SETTINGS (STRICT):\\n- Shot on iPhone 15 Pro or Sony A7R IV.\\n- Natural lighting, slightly imperfect framing (candid look).\\n- Skin texture must be visible (pores, slight stubble).\\n- Background: Real world location, depth of field (blurred background).\\n- NO 3D render, NO illustration, NO painting, NO plastic skin.\\n- The image should look like a casual social media post.",
-        "options": {
-          "returnImageUrls": true
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 2.1,
-      "position": [
-        496,
-        608
-      ],
-      "id": "08b2e835-6fb7-4f5a-8f8e-20d33eb88c52",
-      "name": "3. Generate Final Image (DALL-E)",
-      "credentials": {
-        "openAiApi": {
-          "id": "80V1Gor0JJzon2kM",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "download",
         "fileId": {
           "__rl": true,
@@ -33,17 +10,17 @@
         },
         "options": {}
       },
-      "id": "dab8f550-6d36-4340-9382-826f4b3c8df1",
+      "id": "65c2d19d-4ff0-4759-849b-e5a4b610d3a6",
       "name": "1. Download Avatar (Drive)",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -16,
-        608
+        1136,
+        496
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "MxOIeaRiomehYo33",
+          "id": "7AEyRDR1IXz6nUBI",
           "name": "Google Drive account"
         }
       }
@@ -75,10 +52,10 @@
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.3,
       "position": [
-        -896,
-        368
+        112,
+        240
       ],
-      "id": "d7604231-5579-4048-8f1f-cfa04487c0e4",
+      "id": "98eba71b-2827-4c41-95a8-71a73a9f4497",
       "name": "On form submission",
       "webhookId": "7275a71e-2225-4198-be42-148bf2cabdbf"
     },
@@ -165,36 +142,17 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        -672,
-        368
+        336,
+        144
       ],
-      "id": "2d23f93e-2b96-43b4-92dd-41ae64407840",
+      "id": "37cc90a7-07cc-4fc5-bcc4-828d40ef0d2f",
       "name": "Append row in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "4GK90jXD5Wme7sSn",
-          "name": "Google Auth agung@irisnco.id"
+          "id": "Z9q8ziFjnZcW0mfJ",
+          "name": "Google Sheets account"
         }
       }
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "minutes"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.3,
-      "position": [
-        -960,
-        752
-      ],
-      "id": "0f95a307-ca46-4dbc-b552-f4cf1d575deb",
-      "name": "Schedule Trigger"
     },
     {
       "parameters": {
@@ -225,15 +183,15 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        -736,
-        752
+        240,
+        592
       ],
-      "id": "6ea155c5-7a0c-49e0-9c68-616fbac51b2b",
+      "id": "879229d5-a91d-4113-9046-79f6d48aa972",
       "name": "Get row(s) in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "4GK90jXD5Wme7sSn",
-          "name": "Google Auth agung@irisnco.id"
+          "id": "Z9q8ziFjnZcW0mfJ",
+          "name": "Google Sheets account"
         }
       }
     },
@@ -254,10 +212,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -528,
-        752
+        464,
+        592
       ],
-      "id": "2d2e6307-6808-4324-acdb-53836ac3f0f4",
+      "id": "e2056af6-8882-49fa-96a3-511dd134a886",
       "name": "Normalize Data "
     },
     {
@@ -286,10 +244,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -304,
-        752
+        688,
+        592
       ],
-      "id": "bc7ca9d5-f65a-4235-b9ed-96d5dbacc577",
+      "id": "0862a21e-325a-4bde-b022-ce35b9a45e7f",
       "name": "If"
     },
     {
@@ -318,10 +276,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -144,
-        752
+        912,
+        592
       ],
-      "id": "0d9fd54f-9567-4a98-88bb-a6988341fa8b",
+      "id": "645c37fb-fe4b-49ca-815e-eb688c39b746",
       "name": "Check Image URL"
     },
     {
@@ -341,32 +299,360 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        256,
-        896
+        1408,
+        816
       ],
-      "id": "36978c63-cc64-4df1-9ee4-877d5fc09078",
+      "id": "babc09fa-9a06-4005-9d8f-0c0b4a9c648c",
       "name": "Set Existing Image"
     },
     {
       "parameters": {},
-      "id": "7bf3b53d-b007-4a04-8135-77d4fa016d7a",
+      "id": "1f6eb03f-d76c-42de-828e-bf30ea59fc31",
       "name": "Merge Data",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        704,
-        752
+        1936,
+        592
       ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a Photography Director. \\n\\nAnalyze the attached image and write a strict physical description for a DALL-E 3 prompt.\\n\\nTARGET: The result must look like a REAL PHOTO posted on Instagram, NOT an art piece.\\n\\nFocus on:\\n1. **Age & Ethnicity:** Be precise (e.g., \\\"Young European male, approx 25 years old\\\").\\n2. **Specific Features:** Stubble/beard, hair texture, eye shape.\\n3. **Clothing:** Describe the exact clothes in the photo (e.g., \\\"Red Ferrari Polo shirt\\\").\\n\\nOutput ONLY the physical description. Do not add intro/outro."
+            },
+            {
+              "content": "Analyze this person."
+            },
+            {
+              "content": "={{ \"data:\" + $('1. Download Avatar (Drive)').item.binary.data.mimeType + \";base64,\" + $('1. Download Avatar (Drive)').item.binary.data.data }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b9f7c88e-583b-4654-b3f4-15bf044d9b41",
+      "name": "2. Describe Avatar (GPT-4o)",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        496
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "QCPldoMCbpTlyIDH",
+          "name": "OpenAi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "input-jadwal1",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        112,
+        48
+      ],
+      "id": "ca5b61d6-5d24-44ca-bf40-69d3da72e3a6",
+      "name": "Webhook",
+      "webhookId": "ce35f991-3a1a-48fc-83e0-e08138159195",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aRd4eM3fZvyi4dJQ",
+          "name": "headerAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "get-jadwal1",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        1024,
+        128
+      ],
+      "id": "02b4c0f4-1eac-4927-85b2-d32e29719373",
+      "name": "Webhook GET",
+      "webhookId": "4045e2d1-e149-4513-b895-904dd13a0d6e",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aRd4eM3fZvyi4dJQ",
+          "name": "headerAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw",
+          "mode": "list",
+          "cachedResultName": "Posting_Medsos_Otomatis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 931616861,
+          "mode": "list",
+          "cachedResultName": "Jadwal_Mentah",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit#gid=931616861"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1248,
+        128
+      ],
+      "id": "6d5a8dc2-499a-443a-9164-c9b224dafb1d",
+      "name": "Get All Rows",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Z9q8ziFjnZcW0mfJ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1472,
+        128
+      ],
+      "id": "7da9d722-5253-45cb-835b-df01fbe7082d",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "content": "## GET Schedule",
+        "height": 288,
+        "width": 880
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        848,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "0124c0e2-dc7b-430e-b491-e04bb20f5945",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## POST Schedule",
+        "height": 400,
+        "width": 544
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "1711e298-fe89-46dc-8309-bebd2526dd9f",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Generate Image",
+        "height": 608,
+        "width": 2608
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        432
+      ],
+      "typeVersion": 1,
+      "id": "29e4c349-cb57-4e1e-af14-5467c959a0e5",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "preview-image1",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        16,
+        1216
+      ],
+      "id": "92099e25-c8a9-4258-a8f0-a3c07b04bf23",
+      "name": "Preview Webhook",
+      "webhookId": "preview-webhook-id",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aRd4eM3fZvyi4dJQ",
+          "name": "headerAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign-tema-001",
+              "name": "Tema",
+              "value": "={{ $json.body.tema }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        1216
+      ],
+      "id": "48f1e785-1206-4759-a613-c7fae96612dc",
+      "name": "Extract Tema"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1KuVSTqSLFhpHSalZGxAEq3dcZSiFrI25",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "d82b5654-f024-46e1-b81c-d8015c87b011",
+      "name": "Download Avatar (Preview)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        464,
+        1216
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "7AEyRDR1IXz6nUBI",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a Photography Director. \\n\\nAnalyze the attached image and write a strict physical description for a DALL-E 3 prompt.\\n\\nTARGET: The result must look like a REAL PHOTO posted on Instagram, NOT an art piece.\\n\\nFocus on:\\n1. **Age & Ethnicity:** Be precise (e.g., \\\"Young European male, approx 25 years old\\\").\\n2. **Specific Features:** Stubble/beard, hair texture, eye shape.\\n3. **Clothing:** Describe the exact clothes in the photo (e.g., \\\"Red Ferrari Polo shirt\\\").\\n\\nOutput ONLY the physical description. Do not add intro/outro."
+            },
+            {
+              "content": "Analyze this person."
+            },
+            {
+              "content": "={{ \"data:\" + $('Download Avatar (Preview)').item.binary.data.mimeType + \";base64,\" + $('Download Avatar (Preview)').item.binary.data.data }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6926965a-3e83-47d8-a3f3-9c3fde2ee0b1",
+      "name": "Describe Avatar (Preview)",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [
+        688,
+        1216
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "QCPldoMCbpTlyIDH",
+          "name": "OpenAi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "binary",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1248,
+        1216
+      ],
+      "id": "2a11a921-4971-4dab-b454-1837da96ffb9",
+      "name": "Respond to Webhook Preview"
+    },
+    {
+      "parameters": {
+        "content": "## Ref\n\nhttps://www.youtube.com/watch?v=PjXYr6M4fjY"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        576,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "da5d3007-0b09-4aa4-9df3-0615d5740ee9",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Previwe Image",
+        "height": 368,
+        "width": 1472
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        1072
+      ],
+      "typeVersion": 1,
+      "id": "c7e12a03-3415-41e0-81d6-644bbc1977fa",
+      "name": "Sticky Note4"
     },
     {
       "parameters": {
         "operation": "update",
         "documentId": {
           "__rl": true,
-          "value": "10KIUmq2ZjqClsdGKKoXKk3NMiWz4hfczZpuzDjxX1Gc",
+          "value": "1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw",
           "mode": "list",
-          "cachedResultName": "image-post",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10KIUmq2ZjqClsdGKKoXKk3NMiWz4hfczZpuzDjxX1Gc/edit?usp=drivesdk"
+          "cachedResultName": "Posting_Medsos_Otomatis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
@@ -416,6 +702,26 @@
               "removed": false
             },
             {
+              "id": "Image_URL",
+              "displayName": "Image_URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Account",
+              "displayName": "Account",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
               "id": "row_number",
               "displayName": "row_number",
               "required": false,
@@ -435,27 +741,112 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        912,
-        848
+        2160,
+        496
       ],
-      "id": "8ba87047-f796-43f5-8634-5592de9f643f",
-      "name": "Update Status to Done",
+      "id": "4d3aa340-8230-4a7e-856b-f4138795420a",
+      "name": "Update Status to Done1",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "4GK90jXD5Wme7sSn",
-          "name": "Google Auth agung@irisnco.id"
+          "id": "Z9q8ziFjnZcW0mfJ",
+          "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Get row(s) in sheet').item.json.Account }}",
+                    "rightValue": "jakaambisi",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "40c889df-b6a0-4bf6-ae56-65d503aaecd1"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "647c1c56-d5e0-4cdb-908c-c12fe863f239",
+                    "leftValue": "={{ $('Get row(s) in sheet').item.json.Account }}",
+                    "rightValue": "viravoyages",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1e377f28-3b33-49ad-b7be-d2013f3c615c",
+                    "leftValue": "={{ $('Get row(s) in sheet').item.json.Account }}",
+                    "rightValue": "karin.nova_",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        2160,
+        688
+      ],
+      "id": "999b9a33-0522-46eb-bec5-370bc17357d3",
+      "name": "Switch"
     },
     {
       "parameters": {
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "10KIUmq2ZjqClsdGKKoXKk3NMiWz4hfczZpuzDjxX1Gc",
+          "value": "1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw",
           "mode": "list",
-          "cachedResultName": "image-post",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10KIUmq2ZjqClsdGKKoXKk3NMiWz4hfczZpuzDjxX1Gc/edit?usp=drivesdk"
+          "cachedResultName": "Posting_Medsos_Otomatis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
@@ -499,104 +890,21 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        912,
-        624
+        2384,
+        512
       ],
-      "id": "24ca1f2b-bfc6-47e3-bcc6-d3a7979742af",
+      "id": "40dde8d7-e5a4-40e7-8adb-bb8f34af460f",
       "name": "Append row in sheet1",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "4GK90jXD5Wme7sSn",
-          "name": "Google Auth agung@irisnco.id"
+          "id": "Z9q8ziFjnZcW0mfJ",
+          "name": "Google Sheets account"
         }
       }
     },
     {
       "parameters": {
-        "modelId": {
-          "__rl": true,
-          "value": "gpt-4o",
-          "mode": "list",
-          "cachedResultName": "gpt-4o"
-        },
-        "messages": {
-          "values": [
-            {
-              "content": "You are a Photography Director. \\n\\nAnalyze the attached image and write a strict physical description for a DALL-E 3 prompt.\\n\\nTARGET: The result must look like a REAL PHOTO posted on Instagram, NOT an art piece.\\n\\nFocus on:\\n1. **Age & Ethnicity:** Be precise (e.g., \\\"Young European male, approx 25 years old\\\").\\n2. **Specific Features:** Stubble/beard, hair texture, eye shape.\\n3. **Clothing:** Describe the exact clothes in the photo (e.g., \\\"Red Ferrari Polo shirt\\\").\\n\\nOutput ONLY the physical description. Do not add intro/outro."
-            },
-            {
-              "content": "Analyze this person."
-            },
-            {
-              "content": "={{ \"data:\" + $('1. Download Avatar (Drive)').item.binary.data.mimeType + \";base64,\" + $('1. Download Avatar (Drive)').item.binary.data.data }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "7274118c-6caa-4aa7-aeb5-ad74726f7a01",
-      "name": "2. Describe Avatar (GPT-4o)",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1,
-      "position": [
-        224,
-        608
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "80V1Gor0JJzon2kM",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "input-jadwal",
-        "authentication": "headerAuth",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2.1,
-      "position": [
-        -896,
-        208
-      ],
-      "id": "67c9bbea-2ec3-4e78-b674-6b5b8c808dce",
-      "name": "Webhook",
-      "webhookId": "ce35f991-3a1a-48fc-83e0-e08138159195",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "MNwKiSatRr48hlpz",
-          "name": "NextJS_AiAvatar"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "path": "get-jadwal",
-        "authentication": "headerAuth",
-        "responseMode": "responseNode",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2.1,
-      "position": [
-        16,
-        240
-      ],
-      "id": "7e2b721b-9d66-4c9e-8efa-46b14f82b940",
-      "name": "Webhook GET",
-      "webhookId": "4045e2d1-e149-4513-b895-904dd13a0d6e",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "MNwKiSatRr48hlpz",
-          "name": "NextJS_AiAvatar"
-        }
-      }
-    },
-    {
-      "parameters": {
+        "operation": "append",
         "documentId": {
           "__rl": true,
           "value": "1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw",
@@ -606,275 +914,185 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 931616861,
+          "value": 1425114178,
           "mode": "list",
-          "cachedResultName": "Jadwal_Mentah",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit#gid=931616861"
+          "cachedResultName": "sheet2-karin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit#gid=1425114178"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Image_URL": "={{ $json.url }}",
+            "Caption": "={{ $('Get row(s) in sheet').item.json.Tema }} #AIArt #Automated"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Image_URL",
+              "displayName": "Image_URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Caption",
+              "displayName": "Caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
         },
         "options": {}
       },
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        240,
-        240
+        2384,
+        704
       ],
-      "id": "0bd0087c-4e4c-4e78-936d-5a4dceeba9c8",
-      "name": "Get All Rows",
+      "id": "04be3040-a4e3-472c-bd97-8f7294da917c",
+      "name": "Append row in sheet2",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "4GK90jXD5Wme7sSn",
-          "name": "Google Auth agung@irisnco.id"
+          "id": "Z9q8ziFjnZcW0mfJ",
+          "name": "Google Sheets account"
         }
       }
     },
     {
       "parameters": {
-        "respondWith": "allIncomingItems",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.1,
-      "position": [
-        464,
-        240
-      ],
-      "id": "88c075b3-2f9f-4006-bf2d-24c2d06f4bb2",
-      "name": "Respond to Webhook"
-    },
-    {
-      "parameters": {
-        "content": "## GET Schedule",
-        "height": 288,
-        "width": 880
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -160,
-        144
-      ],
-      "typeVersion": 1,
-      "id": "ea93a07d-c8a4-47ce-94a8-f06aaae7bed1",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "content": "## POST Schedule",
-        "height": 400,
-        "width": 544
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -1008,
-        144
-      ],
-      "typeVersion": 1,
-      "id": "2b7b8c79-c513-4b35-a2ef-5a85d85f6ee5",
-      "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
-        "content": "## Generate Image",
-        "height": 464,
-        "width": 2144
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -1008,
-        576
-      ],
-      "typeVersion": 1,
-      "id": "573cb12f-d09b-4bf8-8731-a136d421e71b",
-      "name": "Sticky Note2"
-    },
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "preview-image",
-        "authentication": "headerAuth",
-        "responseMode": "responseNode",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2.1,
-      "position": [
-        -944,
-        1168
-      ],
-      "id": "518549c6-09a4-463f-b4bb-781b2b9e5e71",
-      "name": "Preview Webhook",
-      "webhookId": "preview-webhook-id",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "MNwKiSatRr48hlpz",
-          "name": "NextJS_AiAvatar"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "assign-tema-001",
-              "name": "Tema",
-              "value": "={{ $json.body.tema }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -752,
-        1168
-      ],
-      "id": "f162532d-643f-4a56-93b6-a3e45829140e",
-      "name": "Extract Tema"
-    },
-    {
-      "parameters": {
-        "operation": "download",
-        "fileId": {
+        "operation": "append",
+        "documentId": {
           "__rl": true,
-          "value": "1KuVSTqSLFhpHSalZGxAEq3dcZSiFrI25",
-          "mode": "id"
-        },
-        "options": {}
-      },
-      "id": "522f9e74-d4ab-4d94-a35e-cfa409780027",
-      "name": "Download Avatar (Preview)",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        -544,
-        1168
-      ],
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "MxOIeaRiomehYo33",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "modelId": {
-          "__rl": true,
-          "value": "gpt-4o",
+          "value": "1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw",
           "mode": "list",
-          "cachedResultName": "gpt-4o"
+          "cachedResultName": "Posting_Medsos_Otomatis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit?usp=drivesdk"
         },
-        "messages": {
-          "values": [
+        "sheetName": {
+          "__rl": true,
+          "value": 1130880991,
+          "mode": "list",
+          "cachedResultName": "sheet3-vira",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tDSKiF45Sl1hZg78e5kmgVbNEHkn1WOMK7CIQwxcTyw/edit#gid=1130880991"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Image_URL": "={{ $json.url }}",
+            "Caption": "={{ $('Get row(s) in sheet').item.json.Tema }} #AIArt #Automated"
+          },
+          "matchingColumns": [],
+          "schema": [
             {
-              "content": "You are a Photography Director. \\n\\nAnalyze the attached image and write a strict physical description for a DALL-E 3 prompt.\\n\\nTARGET: The result must look like a REAL PHOTO posted on Instagram, NOT an art piece.\\n\\nFocus on:\\n1. **Age & Ethnicity:** Be precise (e.g., \\\"Young European male, approx 25 years old\\\").\\n2. **Specific Features:** Stubble/beard, hair texture, eye shape.\\n3. **Clothing:** Describe the exact clothes in the photo (e.g., \\\"Red Ferrari Polo shirt\\\").\\n\\nOutput ONLY the physical description. Do not add intro/outro."
+              "id": "Image_URL",
+              "displayName": "Image_URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
             },
             {
-              "content": "Analyze this person."
-            },
-            {
-              "content": "={{ \"data:\" + $('Download Avatar (Preview)').item.binary.data.mimeType + \";base64,\" + $('Download Avatar (Preview)').item.binary.data.data }}"
+              "id": "Caption",
+              "displayName": "Caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
             }
-          ]
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
         },
         "options": {}
       },
-      "id": "edcee1ac-a7cd-420d-9ad1-8dfe43215623",
-      "name": "Describe Avatar (Preview)",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
       "position": [
-        -352,
-        1168
+        2384,
+        896
       ],
+      "id": "fa8a33ea-f0d5-45ae-bcf7-51d106e7d4b8",
+      "name": "Append row in sheet3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Z9q8ziFjnZcW0mfJ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        32,
+        592
+      ],
+      "id": "b0be45dc-5085-4ff0-996d-7353f4d8643a",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=A candid, realistic photograph of {{ $('2. Describe Avatar (GPT-4o)').item.json.content }}. \\n\\nThe person is currently: {{ $('Get row(s) in sheet').item.json.Tema }}.\\n\\nPHOTOGRAPHY SETTINGS (STRICT):\\n- Shot on iPhone 15 Pro or Sony A7R IV.\\n- Natural lighting, slightly imperfect framing (candid look).\\n- Skin texture must be visible (pores, slight stubble).\\n- Background: Real world location, depth of field (blurred background).\\n- NO 3D render, NO illustration, NO painting, NO plastic skin.\\n- The image should look like a casual social media post.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1648,
+        496
+      ],
+      "id": "6743e0bc-e8ae-4f09-a176-bd83b113cc38",
+      "name": "Generate an image",
       "credentials": {
         "openAiApi": {
-          "id": "80V1Gor0JJzon2kM",
-          "name": "OpenAi account"
+          "id": "QCPldoMCbpTlyIDH",
+          "name": "OpenAi account 3"
         }
       }
     },
     {
       "parameters": {
         "resource": "image",
-        "prompt": "=A candid, realistic photograph of {{ $('Describe Avatar (Preview)').item.json.content }}. \\n\\nThe person is currently: {{ $('Extract Tema').item.json.Tema }}.\\n\\nPHOTOGRAPHY SETTINGS (STRICT):\\n- Shot on iPhone 15 Pro or Sony A7R IV.\\n- Natural lighting, slightly imperfect framing (candid look).\\n- Skin texture must be visible (pores, slight stubble).\\n- Background: Real world location, depth of field (blurred background.\\n- NO 3D render, NO illustration, NO painting, NO plastic skin.\\n- The image should look like a casual social media post.",
-        "options": {
-          "returnImageUrls": true
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 2.1,
-      "position": [
-        -16,
-        1168
-      ],
-      "id": "0e135064-9796-4354-890e-48f0b322ec2c",
-      "name": "Generate Image (Preview)",
-      "credentials": {
-        "openAiApi": {
-          "id": "80V1Gor0JJzon2kM",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "respondWith": "allIncomingItems",
+        "prompt": "=A candid, realistic photograph of {{ $json.message.content }}. \\n\\nThe person is currently: {{ $('Extract Tema').item.json.Tema }}.\\n\\nPHOTOGRAPHY SETTINGS (STRICT):\\n- Shot on iPhone 15 Pro or Sony A7R IV.\\n- Natural lighting, slightly imperfect framing (candid look).\\n- Skin texture must be visible (pores, slight stubble).\\n- Background: Real world location, depth of field (blurred background).\\n- NO 3D render, NO illustration, NO painting, NO plastic skin.\\n- The image should look like a casual social media post.",
         "options": {}
       },
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.1,
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
       "position": [
-        192,
-        1168
+        1040,
+        1216
       ],
-      "id": "654376b9-256b-4a36-b1b8-64381a14d25c",
-      "name": "Respond to Webhook Preview"
-    },
-    {
-      "parameters": {
-        "content": "## Ref\n\nhttps://www.youtube.com/watch?v=PjXYr6M4fjY"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -432,
-        144
-      ],
-      "typeVersion": 1,
-      "id": "2b659e3c-0380-4cbc-a66b-40f3bd6f85ec",
-      "name": "Sticky Note3"
-    },
-    {
-      "parameters": {
-        "content": "## Previwe Image",
-        "height": 304,
-        "width": 1376
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -1008,
-        1072
-      ],
-      "typeVersion": 1,
-      "id": "d8ac0107-f613-4deb-b401-02099de4a6bd",
-      "name": "Sticky Note4"
+      "id": "136d7913-2b4d-46c4-b77b-c3b9d2cf0c80",
+      "name": "Generate an image1",
+      "credentials": {
+        "openAiApi": {
+          "id": "QCPldoMCbpTlyIDH",
+          "name": "OpenAi account 3"
+        }
+      }
     }
   ],
   "connections": {
-    "3. Generate Final Image (DALL-E)": {
-      "main": [
-        [
-          {
-            "node": "Merge Data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "1. Download Avatar (Drive)": {
       "main": [
         [
@@ -891,17 +1109,6 @@
         [
           {
             "node": "Append row in sheet",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Schedule Trigger": {
-      "main": [
-        [
-          {
-            "node": "Get row(s) in sheet",
             "type": "main",
             "index": 0
           }
@@ -974,12 +1181,12 @@
       "main": [
         [
           {
-            "node": "Append row in sheet1",
+            "node": "Switch",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Update Status to Done",
+            "node": "Update Status to Done1",
             "type": "main",
             "index": 0
           }
@@ -990,7 +1197,7 @@
       "main": [
         [
           {
-            "node": "3. Generate Final Image (DALL-E)",
+            "node": "Generate an image",
             "type": "main",
             "index": 0
           }
@@ -1067,14 +1274,61 @@
       "main": [
         [
           {
-            "node": "Generate Image (Preview)",
+            "node": "Generate an image1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Generate Image (Preview)": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "Merge Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image1": {
       "main": [
         [
           {
@@ -1090,29 +1344,42 @@
     "Preview Webhook": [
       {
         "headers": {
-          "host": "localhost:5678",
-          "connection": "keep-alive",
-          "content-type": "application/json",
-          "x-api-key": "Password123",
-          "accept": "*/*",
-          "accept-language": "*",
-          "sec-fetch-mode": "cors",
+          "host": "irisnco.app.n8n.cloud",
           "user-agent": "node",
-          "accept-encoding": "gzip, deflate",
-          "content-length": "43"
+          "content-length": "17",
+          "accept": "*/*",
+          "accept-encoding": "gzip, br",
+          "accept-language": "*",
+          "cdn-loop": "cloudflare; loops=1; subreqs=1",
+          "cf-connecting-ip": "2405:8180:403:dd66:d09c:312c:f515:d43",
+          "cf-ew-via": "15",
+          "cf-ipcountry": "ID",
+          "cf-ray": "9b2e02819668e5ce-CGK",
+          "cf-visitor": "{\"scheme\":\"https\"}",
+          "cf-worker": "n8n.cloud",
+          "content-type": "application/json",
+          "sec-fetch-mode": "cors",
+          "x-api-key": "Password123",
+          "x-forwarded-for": "2405:8180:403:dd66:d09c:312c:f515:d43, 172.69.89.179",
+          "x-forwarded-host": "irisnco.app.n8n.cloud",
+          "x-forwarded-port": "443",
+          "x-forwarded-proto": "https",
+          "x-forwarded-server": "traefik-prod-users-gwc-29-677bf4754f-jwb4f",
+          "x-is-trusted": "yes",
+          "x-real-ip": "2405:8180:403:dd66:d09c:312c:f515:d43"
         },
         "params": {},
         "query": {},
         "body": {
-          "tema": "Melihat kembang api di perdesaan"
+          "tema": "debug1"
         },
-        "webhookUrl": "http://localhost:5678/webhook/preview-image",
+        "webhookUrl": "https://irisnco.app.n8n.cloud/webhook/preview-image1",
         "executionMode": "production"
       }
     ]
   },
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "e7aec7924d48196975fde37e9422c784fa4b269fea9a4b137c2f5d8c8fb1ab3e"
+    "instanceId": "4707a18444016fe2d0d9d067ea353e9096c70b5bf9db9010dee08ab32de2d8ec"
   }
 }

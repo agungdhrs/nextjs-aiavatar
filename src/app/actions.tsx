@@ -14,9 +14,8 @@ export async function submitJadwal(formData: FormData) {
   const tema = formData.get('tema');
   const tanggal = formData.get('tanggal');
   const jam = formData.get('jam');
-
-  const imageUrl = formData.get('imageUrl');
   const account = formData.get('account');
+  const imageUrl = formData.get('imageUrl');
 
   // Simple validation
   if (!tema || !tanggal || !jam || !account) {
@@ -27,7 +26,7 @@ export async function submitJadwal(formData: FormData) {
     'Tema Postingan': tema,
     'Tanggal Posting': tanggal,
     'Jam': jam,
-    'Image URL': imageUrl,
+    'Image URL': imageUrl,  // Will work once reject.json is active
     'Account': account,
   };
 
@@ -137,18 +136,94 @@ export async function generatePreview(formData: FormData) {
       throw new Error(`Failed to generate preview: ${response.status} ${text}`);
     }
 
-    const data = await response.json();
-    // Expecting { imageUrl: "..." } or similar
-    // We will verify the n8n response structure in the next steps.
-    // Let's assume n8n returns { url: "..." } or { data: { url: "..." } }
+    // Check content-type to determine response format
+    const contentType = response.headers.get('content-type') || '';
+    console.log('🔍 n8n Response Content-Type:', contentType);
 
-    // For now, return the whole json and let frontend handle or standardize here.
-    const imageUrl = data.url || data[0]?.url || data.output?.url;
+    // If n8n returns binary image (respondWith: 'binary'), convert to base64
+    // NOTE: This creates large data URLs (~2MB) that cannot be saved to Google Sheets
+    // but works fine for preview display only
+    if (contentType.includes('image/')) {
+      console.log('📸 Received binary image from n8n');
+      const arrayBuffer = await response.arrayBuffer();
+      const base64 = Buffer.from(arrayBuffer).toString('base64');
+      const imageUrl = `data:${contentType};base64,${base64}`;
 
-    if (imageUrl) {
+      console.log('✅ Binary converted to data URL (length:', imageUrl.length, ')');
+      console.log('⚠️ Note: Data URL too large for Google Sheets. Use URL extraction instead for submit.');
       return { success: true, imageUrl, message: 'Preview berhasil' };
     }
-    return { success: false, message: 'Gagal parsing URL gambar dari respon' };
+
+    // Otherwise parse as JSON and extract OpenAI URL
+    const data = await response.json();
+    console.log('🔍 n8n Preview Response:', JSON.stringify(data, null, 2));
+
+    let imageUrl = null;
+
+    // Try to extract OpenAI URL from various n8n response structures
+
+    // Pattern 1: Direct URL string
+    if (typeof data === 'string' && data.startsWith('http')) {
+      imageUrl = data;
+    }
+    // Pattern 2: Direct url property
+    else if (data.url && typeof data.url === 'string') {
+      imageUrl = data.url;
+    }
+    // Pattern 3: imageUrl property
+    else if (data.imageUrl && typeof data.imageUrl === 'string') {
+      imageUrl = data.imageUrl;
+    }
+    // Pattern 4: OpenAI format - data array with url
+    else if (data.data && Array.isArray(data.data) && data.data[0]?.url) {
+      imageUrl = data.data[0].url;
+    }
+    // Pattern 5: Array response with url
+    else if (Array.isArray(data) && data[0]?.url) {
+      imageUrl = data[0].url;
+    }
+    // Pattern 6: Array response with imageUrl
+    else if (Array.isArray(data) && data[0]?.imageUrl) {
+      imageUrl = data[0].imageUrl;
+    }
+    // Pattern 7: Nested in output
+    else if (data.output?.url) {
+      imageUrl = data.output.url;
+    }
+    // Pattern 8: OpenAI message.content format
+    else if (data.message?.content) {
+      imageUrl = data.message.content;
+    }
+    // Pattern 9: n8n array-like object {0: {...}}
+    else if (data['0']) {
+      const item = data['0'];
+      if (typeof item === 'string' && item.startsWith('http')) {
+        imageUrl = item;
+      } else if (item.json?.url) {
+        imageUrl = item.json.url;
+      } else if (item.json?.imageUrl) {
+        imageUrl = item.json.imageUrl;
+      } else if (item.json?.data && Array.isArray(item.json.data) && item.json.data[0]?.url) {
+        // OpenAI format nested in n8n item
+        imageUrl = item.json.data[0].url;
+      } else if (item.json?.message?.content) {
+        imageUrl = item.json.message.content;
+      }
+    }
+
+    if (imageUrl && typeof imageUrl === 'string' && imageUrl.startsWith('http')) {
+      console.log('✅ OpenAI URL extracted:', imageUrl.substring(0, 100) + '...');
+      return { success: true, imageUrl, message: 'Preview berhasil' };
+    }
+
+    console.error('❌ Could not extract URL from response');
+    console.error('Response keys:', Object.keys(data));
+    console.error('Response sample:', JSON.stringify(data).substring(0, 500));
+
+    return {
+      success: false,
+      message: 'Gagal extract URL dari n8n response'
+    };
 
   } catch (error) {
     console.error('Preview Error:', error);
